@@ -40,38 +40,31 @@ namespace AM.Core.Services
                 : Flights.Where(f => property.GetValue(f)?.ToString()?.Equals(filterValue, StringComparison.OrdinalIgnoreCase) == true)
                          .ToList();
         }
-        //Afficher les dates et les destinations des vols d’un avion donné
         public IList<(DateTime FlightDate, string Destination)> ShowFlightDetails(Plane plane)
         {
             return Flights.Where(f => f.MyPlane == plane)
                           .Select(f => (f.FlightDate, f.Destination))
                           .ToList();
         }
-        //Retourner le nombre de vols programmés pour une semaine à partir d’une date donnée
         public int GetWeeklyFlightNumber(DateTime startDate)
         {
             return Flights.Count(f => f.FlightDate >= startDate && f.FlightDate < startDate.AddDays(7));
         }
-        // 9. Retourner la moyenne des durées estimées des vols d’une destination donnée
         public double GetDurationAverage(string destination)
         {
             return Flights.Where(f => f.Destination == destination)
                           .Average(f => (double)f.EstimatedDuration);
         }
-
-        // 10. Retourner les vols triés par ordre décroissant de leurs durées estimées
         public IList<Flight> SortFlights()
         {
             return Flights.OrderByDescending(f => f.EstimatedDuration).ToList();
         }
 
-        // 11. Retourner les trois passagers les plus âgés pour un vol donné
         public IList<Passenger> GetThreeOlderTravellers(Flight flight)
         {
-            return flight.Passengers.OrderByDescending(p => p.BirthDate).Take(3).ToList();
+            return flight.Passengers.OrderBy(p => p.BirthDate).Take(3).ToList();
         }
 
-        // 12. Afficher les vols groupés par destination
         public IDictionary<string, List<Flight>> ShowGroupedFlights()
         {
             return Flights.GroupBy(f => f.Destination)
